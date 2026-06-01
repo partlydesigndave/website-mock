@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partly Platform — Infrastructure for the parts industry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.17.0/dist/tabler-icons.min.css" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root {
+    --bg: #FFFFFF;
+    --bg-muted: #F4F4F6;
+    --bg-subtle: #FAFAF9;
+    --bg-cool: #F2F3F5;
+    --bg-inverse: #0A0A0A;
+    --fg: #0A0A0A;
+    --fg-muted: #4B5563;
+    --fg-subtle: #6B7280;
+    --fg-faint: #9CA3AF;
+    --fg-inverse: #FFFFFF;
+    --primary: #3632FF;
+    --primary-hover: #2825D6;
+    --primary-tint: #EEEEFF;
+    --primary-soft: #C5C4FF;
+    --primary-fg: #FFFFFF;
+    --border: #E5E7EB;
+    --border-strong: #D3D1C7;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --container-max: 1280px;
+    --container-pad: 32px;
+  }
+
+  /* ============ RESET ============ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+  .container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--container-pad);
+  }
+
+  /* ============ ANNOUNCE ============ */
+  .announce {
+    background: var(--bg-inverse);
+    color: var(--fg-inverse);
+    border-bottom: 0.5px solid #1F1F1F;
+  }
+  .announce-inner {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px; padding: 10px 0; font-size: 13px;
+  }
+  .announce-tag {
+    background: var(--primary); color: var(--primary-fg);
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: var(--radius-sm);
+  }
+  .announce a {
+    color: var(--primary-soft); display: inline-flex; align-items: center; gap: 4px;
+    transition: color 120ms ease;
+  }
+  .announce a:hover { color: #fff; }
+
+  /* ============ NAV ============ */
+  .nav {
+    border-bottom: 0.5px solid var(--border);
+    position: sticky; top: 0;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(8px);
+    z-index: 50;
+  }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0;
+  }
+  .nav-l { display: flex; align-items: center; gap: 44px; }
+  .logo img { height: 18px; width: auto; display: block; }
+  .nav-links { display: flex; gap: 32px; font-size: 14px; color: var(--fg); }
+  .nav-links a { position: relative; padding: 6px 0; transition: color 120ms ease; }
+  .nav-links a:hover { color: var(--primary); }
+  .nav-links a.active { color: var(--primary); font-weight: 500; }
+  .nav-links a.active::after {
+    content: ''; position: absolute; bottom: -19px; left: 0; right: 0;
+    height: 2px; background: var(--primary);
+  }
+  .nav-r { display: flex; align-items: center; gap: 18px; font-size: 14px; }
+  .nav-r a:not(.btn):hover { color: var(--primary); }
+
+  /* ============ BUTTON ============ */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px; border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 500;
+    border: 0.5px solid var(--border);
+    transition: all 140ms ease; cursor: pointer; white-space: nowrap;
+  }
+  .btn-primary { background: var(--primary); color: var(--primary-fg) !important; border-color: var(--primary); }
+  .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+  .btn-secondary { background: var(--bg); color: var(--fg); }
+  .btn-secondary:hover { background: var(--bg-muted); }
+  .btn-light {
+    background: rgba(255,255,255,0.08); color: #fff !important;
+    border-color: rgba(255,255,255,0.2);
+  }
+  .btn-light:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.35); }
+  .btn-lg { padding: 13px 22px; font-size: 15px; }
+
+  /* ============ HERO — code-led (no photo) ============ */
+  .hero {
+    background: var(--bg-inverse);
+    color: var(--fg-inverse);
+    padding: 80px 0 96px;
+    border-bottom: 0.5px solid var(--border);
+    overflow: hidden;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; letter-spacing: 0.04em;
+    color: var(--primary-soft); font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(42px, 5.2vw, 76px);
+    line-height: 0.98; letter-spacing: -0.04em;
+    font-weight: 600; margin: 0 0 28px;
+    color: #fff;
+  }
+  .hero .lede {
+    font-size: 19px; color: #B4B2A9;
+    margin: 0 0 36px; line-height: 1.5; max-width: 520px;
+  }
+  .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* hero code block */
+  .hero-code {
+    background: #161616;
+    border: 0.5px solid #2C2C2A;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .hero-code-tabs {
+    display: flex;
+    border-bottom: 0.5px solid #2C2C2A;
+    padding: 0 8px;
+  }
+  .hero-code-tab {
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--fg-subtle);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+  .hero-code-tab.active {
+    color: #fff;
+    border-bottom-color: var(--primary);
+  }
+  .hero-code-tab:hover { color: #fff; }
+  .hero-code-body {
+    font-family: 'JetBrains Mono', monospace;
+    padding: 24px 28px;
+    font-size: 13px;
+    line-height: 1.85;
+    color: #E5E7EB;
+    overflow-x: auto;
+  }
+  .code-comment { color: #6B7280; }
+  .code-key { color: var(--primary-soft); }
+  .code-string { color: #9FE1CB; }
+  .code-fn { color: #FAC775; }
+  .code-out { color: var(--primary-soft); }
+  .code-mute { color: var(--fg-subtle); }
+  .code-prompt { color: var(--fg-subtle); margin-right: 10px; user-select: none; }
+  .code-gap { height: 10px; }
+
+  /* ============ TRUST STRIP ============ */
+  .strip {
+    border-bottom: 0.5px solid var(--border);
+    padding: 36px 0;
+    background: var(--bg);
+  }
+  .strip-inner {
+    display: flex; align-items: center; gap: 56px; overflow: hidden;
+  }
+  .strip-label {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--fg-subtle); font-weight: 600;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .strip-logos {
+    display: flex; gap: 56px; align-items: center;
+    color: var(--border-strong); font-weight: 600;
+    font-size: 17px; letter-spacing: -0.01em; flex-wrap: wrap;
+  }
+
+  /* ============ SECTION ============ */
+  .section { padding: 128px 0; border-bottom: 0.5px solid var(--border); }
+  .section-eyebrow {
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--primary); font-weight: 600; margin-bottom: 20px;
+  }
+  .section h2 {
+    font-size: clamp(34px, 4.2vw, 54px);
+    line-height: 1.02; letter-spacing: -0.03em;
+    font-weight: 600; margin: 0 0 22px; max-width: 800px;
+  }
+  .section .lede {
+    font-size: 18px; color: var(--fg-muted);
+    max-width: 640px; margin: 0 0 64px; line-height: 1.55;
+  }
+
+  /* ============ PROTOCOL — connected supply chain section ============ */
+  .protocol-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .protocol-text h3 {
+    font-size: clamp(28px, 3.4vw, 42px);
+    line-height: 1.05; letter-spacing: -0.025em;
+    font-weight: 600; margin: 0 0 18px;
+  }
+  .protocol-text p {
+    font-size: 17px; color: var(--fg-muted);
+    line-height: 1.6; margin-bottom: 22px; max-width: 480px;
+  }
+  .protocol-text ul {
+    list-style: none; padding: 0; margin-top: 28px;
+  }
+  .protocol-text li {
+    font-size: 15px; color: var(--fg-muted);
+    line-height: 1.5; padding: 10px 0;
+    display: flex; gap: 12px;
+    border-top: 0.5px solid var(--border);
+  }
+  .protocol-text li:last-child { border-bottom: 0.5px solid var(--border); }
+  .protocol-text li i {
+    color: var(--primary); font-size: 18px; flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Network diagram */
+  .protocol-diagram {
+    background: var(--bg-subtle);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 48px;
+    min-height: 480px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .protocol-diagram svg { width: 100%; height: auto; max-width: 480px; }
+
+  /* ============ CODE SHOWCASE ============ */
+  .code-showcase {
+    background: var(--bg-inverse);
+    color: var(--fg-inverse);
+    padding: 128px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .code-showcase h2 { color: #fff; }
+  .code-showcase .section-eyebrow { color: var(--primary-soft); }
+  .code-showcase .lede { color: #B4B2A9; }
+  .code-showcase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .code-showcase-list {
+    list-style: none; padding: 0;
+  }
+  .code-showcase-list li {
+    padding: 22px 0;
+    border-top: 0.5px solid #2C2C2A;
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  .code-showcase-list li:last-child { border-bottom: 0.5px solid #2C2C2A; }
+  .code-showcase-list-icon {
+    color: var(--primary-soft);
+    font-size: 20px;
+    margin-top: 2px;
+  }
+  .code-showcase-list-title {
+    font-size: 17px; color: #fff;
+    font-weight: 500; margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .code-showcase-list-desc {
+    font-size: 14px; color: #B4B2A9; line-height: 1.5;
+  }
+  .code-card {
+    background: #161616;
+    border: 0.5px solid #2C2C2A;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  /* ============ CAPABILITIES GRID ============ */
+  .capabilities {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .cap {
+    padding: 28px 24px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    transition: border-color 160ms ease, background 160ms ease;
+  }
+  .cap:hover { border-color: var(--primary); background: var(--bg-subtle); }
+  .cap-icon {
+    width: 40px; height: 40px;
+    background: var(--primary-tint); color: var(--primary);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 18px;
+  }
+  .cap h3 {
+    font-size: 16px; letter-spacing: -0.01em;
+    font-weight: 600; margin-bottom: 6px;
+  }
+  .cap p {
+    font-size: 13px; color: var(--fg-muted); line-height: 1.5;
+  }
+
+  /* ============ MOMENT (customer quote, saturated) ============ */
+  .moment {
+    background: var(--primary);
+    color: var(--primary-fg);
+    padding: 128px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .moment .section-eyebrow { color: rgba(255,255,255,0.7); }
+  .moment-quote {
+    font-size: clamp(28px, 3.4vw, 44px);
+    line-height: 1.2; letter-spacing: -0.02em;
+    font-weight: 500; color: #fff;
+    margin: 0 0 56px; max-width: 920px;
+  }
+  .moment-quote::before {
+    content: '"';
+    font-size: 1.2em; line-height: 0;
+    vertical-align: -0.15em;
+    margin-right: 0.05em;
+    color: var(--primary-soft);
+  }
+  .moment-bottom {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 48px;
+    align-items: end;
+  }
+  .moment-attr {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .moment-attr-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; color: #fff;
+  }
+  .moment-attr-meta {
+    font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.4;
+  }
+  .moment-attr-name { font-weight: 500; color: #fff; }
+  .moment-stat {
+    border-top: 1px solid rgba(255,255,255,0.25);
+    padding-top: 20px;
+  }
+  .moment-stat-value {
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 600; letter-spacing: -0.03em;
+    line-height: 0.95; color: #fff; margin-bottom: 10px;
+  }
+  .moment-stat-label {
+    font-size: 13px; color: rgba(255,255,255,0.85);
+    line-height: 1.5; max-width: 240px;
+  }
+
+  /* ============ PRE-BUILT PRODUCTS ============ */
+  .products-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 16px;
+  }
+  .product {
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg);
+    transition: border-color 160ms ease;
+  }
+  .product:hover { border-color: var(--fg); }
+  .product-visual {
+    background: var(--bg-subtle);
+    padding: 32px;
+    border-bottom: 0.5px solid var(--border);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .product-body { padding: 28px 28px 32px; }
+  .product-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--fg-subtle);
+    letter-spacing: 0.06em; margin-bottom: 14px;
+  }
+  .product h3 {
+    font-size: 22px; letter-spacing: -0.02em;
+    font-weight: 600; margin-bottom: 10px;
+  }
+  .product p {
+    font-size: 14px; color: var(--fg-muted);
+    line-height: 1.6; margin-bottom: 20px;
+  }
+  .product .link {
+    color: var(--primary); font-size: 13px;
+    font-weight: 500; display: inline-flex;
+    align-items: center; gap: 4px;
+  }
+  .product .link:hover { gap: 8px; }
+
+  /* product visual mockups */
+  .pv-app {
+    background: #fff; border: 0.5px solid var(--border);
+    border-radius: var(--radius-md); padding: 14px 16px;
+    width: 100%; max-width: 280px;
+  }
+  .pv-app-bar {
+    display: flex; gap: 4px; margin-bottom: 10px;
+    padding-bottom: 8px; border-bottom: 0.5px solid var(--border);
+  }
+  .pv-app-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .pv-app-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0; font-size: 11px;
+  }
+  .pv-app-row + .pv-app-row { border-top: 0.5px solid var(--bg-muted); }
+  .pv-pill {
+    background: #E1F5EE; color: #0F6E56;
+    padding: 2px 7px; border-radius: 999px;
+    font-size: 10px; font-weight: 500;
+  }
+  .pv-stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; width: 100%; max-width: 280px;
+  }
+  .pv-stat {
+    background: #fff; border: 0.5px solid var(--border);
+    border-radius: var(--radius-md); padding: 12px 14px;
+  }
+  .pv-stat-num {
+    font-size: 22px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .pv-stat-lab { font-size: 10px; color: var(--fg-subtle); }
+  .pv-list {
+    background: #fff; border: 0.5px solid var(--border);
+    border-radius: var(--radius-md); padding: 12px 14px;
+    width: 100%; max-width: 280px; font-size: 11px;
+  }
+  .pv-list-h {
+    font-size: 9px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--fg-subtle);
+    margin-bottom: 8px; font-weight: 600;
+  }
+  .pv-list-row {
+    display: flex; justify-content: space-between;
+    padding: 5px 0; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+  .pv-list-row + .pv-list-row { border-top: 0.5px solid var(--bg-muted); }
+
+  /* ============ INTEGRATIONS GRID ============ */
+  .integrations {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .integration {
+    aspect-ratio: 1.5/1;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 15px;
+    color: var(--fg-subtle);
+    letter-spacing: -0.01em;
+    transition: all 160ms ease;
+  }
+  .integration:hover {
+    border-color: var(--primary);
+    color: var(--fg);
+    background: var(--bg-subtle);
+  }
+
+  /* ============ ACCESS PATHS ============ */
+  .paths {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 16px;
+  }
+  .path {
+    padding: 40px 36px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    transition: border-color 160ms ease;
+  }
+  .path:hover { border-color: var(--primary); }
+  .path.featured {
+    border: 2px solid var(--primary);
+    background: var(--bg);
+  }
+  .path-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--fg-subtle);
+    letter-spacing: 0.06em; margin-bottom: 18px;
+  }
+  .path.featured .path-tag { color: var(--primary); }
+  .path h3 {
+    font-size: 28px; letter-spacing: -0.02em;
+    font-weight: 600; margin-bottom: 12px;
+  }
+  .path > p {
+    font-size: 15px; color: var(--fg-muted);
+    line-height: 1.55; margin-bottom: 28px;
+  }
+  .path-list {
+    list-style: none; padding: 0; margin: 0 0 32px;
+  }
+  .path-list li {
+    padding: 9px 0;
+    font-size: 14px; color: var(--fg);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .path-list li i {
+    color: var(--primary); font-size: 16px;
+    flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    padding: 128px 0;
+    text-align: center;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .final-cta h2 {
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1.02; letter-spacing: -0.03em;
+    font-weight: 600; margin: 0 auto 28px; max-width: 760px;
+  }
+  .final-cta p {
+    font-size: 18px; color: var(--fg-muted);
+    margin: 0 auto 40px; max-width: 520px; line-height: 1.55;
+  }
+  .final-cta-btns {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    padding: 64px 0 32px;
+    background: var(--bg-muted);
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 32px; margin-bottom: 56px;
+  }
+  .footer .logo img { height: 22px; }
+  .footer-tag {
+    font-size: 14px; color: var(--fg-subtle);
+    line-height: 1.55; max-width: 260px; margin-top: 18px;
+  }
+  .footer h4 {
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--fg-subtle);
+    margin: 0 0 18px; font-weight: 600;
+  }
+  .footer a {
+    display: block; color: var(--fg);
+    padding: 5px 0; font-size: 14px;
+    transition: color 120ms ease;
+  }
+  .footer a:hover { color: var(--primary); }
+  .footer-end {
+    padding-top: 32px;
+    border-top: 0.5px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--fg-subtle);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1024px) {
+    .hero-inner, .protocol-grid, .code-showcase-grid {
+      grid-template-columns: 1fr; gap: 40px;
+    }
+    .capabilities { grid-template-columns: repeat(2, 1fr); }
+    .integrations { grid-template-columns: repeat(3, 1fr); }
+    .moment-bottom { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .products-row, .paths { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .section, .moment, .final-cta, .code-showcase, .hero { padding: 80px 0; }
+  }
+  @media (max-width: 560px) {
+    :root { --container-pad: 20px; }
+    .strip-logos { gap: 28px; font-size: 15px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    .footer-end { flex-direction: column; gap: 8px; }
+    .capabilities, .integrations { grid-template-columns: 1fr 1fr; }
+    .announce-inner { font-size: 12px; padding: 8px 16px; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ ANNOUNCEMENT BAR ============ -->
+<div class="announce">
+  <div class="container announce-inner">
+    <span class="announce-tag">v3.0</span>
+    <span>The Partly API is now generally available — webhooks, batch jobs, and streaming.</span>
+    <a href="#">Read changelog <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <div class="nav-l">
+      <a href="index.html" class="logo"><img src="partly-wordmark.svg" alt="Partly" /></a>
+      <div class="nav-links">
+        <a href="index.html">For bodyshops</a>
+        <a href="partly-interpreter.html">Interpreter</a>
+        <a href="partly-platform.html" class="active">Platform</a>
+      </div>
+    </div>
+    <div class="nav-r">
+      <a href="#">Sign in</a>
+      <a href="#" class="btn btn-primary">Talk to sales</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO — code-led ============ -->
+<header class="hero">
+  <div class="container hero-inner">
+    <div>
+      <div class="hero-eyebrow">// platform</div>
+      <h1>Build on the world's parts data.</h1>
+      <p class="lede">One API for identification, sourcing, and supply. Connect your systems to the parts industry's connective tissue — and let the data do the integration work.</p>
+      <div class="hero-cta">
+        <a href="#" class="btn btn-primary btn-lg">Start building</a>
+        <a href="#" class="btn btn-light btn-lg">View API docs <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    <div class="hero-code">
+      <div class="hero-code-tabs">
+        <div class="hero-code-tab active">JavaScript</div>
+        <div class="hero-code-tab">Python</div>
+        <div class="hero-code-tab">cURL</div>
+      </div>
+      <div class="hero-code-body">
+<div><span class="code-comment">// identify parts from a damaged vehicle</span></div>
+<div><span class="code-key">const</span> result = <span class="code-key">await</span> partly.<span class="code-fn">identify</span>({</div>
+<div>  <span class="code-out">vin</span>: <span class="code-string">'JTMA1RFV0MD074921'</span>,</div>
+<div>  <span class="code-out">images</span>: [damagePhotoUrl],</div>
+<div>  <span class="code-out">region</span>: <span class="code-string">'NZ'</span></div>
+<div>});</div>
+<div class="code-gap"></div>
+<div><span class="code-comment">// returns standardised, fitment-resolved parts list</span></div>
+<div>{</div>
+<div>  <span class="code-out">"parts"</span>: [{</div>
+<div>    <span class="code-out">"id"</span>: <span class="code-string">"part.front_bumper.cover"</span>,</div>
+<div>    <span class="code-out">"oem"</span>: <span class="code-string">"52119-0R907"</span>,</div>
+<div>    <span class="code-out">"availability"</span>: <span class="code-string">"in_stock"</span>,</div>
+<div>    <span class="code-out">"confidence"</span>: <span class="code-string">0.98</span></div>
+<div>  }, <span class="code-mute">/* + 13 more */</span>],</div>
+<div>  <span class="code-out">"resolved_in"</span>: <span class="code-string">"412ms"</span></div>
+<div>}</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ TRUST STRIP ============ -->
+<section class="strip">
+  <div class="container strip-inner">
+    <div class="strip-label">Powering parts for</div>
+    <div class="strip-logos">
+      <span>Toyota</span>
+      <span>Hyundai</span>
+      <span>JLR</span>
+      <span>Mitchell</span>
+      <span>AMI Motorhub</span>
+      <span>Solera</span>
+      <span>Repco</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROTOCOL — the connected supply chain ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow">The protocol layer</div>
+    <h2>A common protocol for an industry that's never had one.</h2>
+    <p class="lede">Every participant in the parts industry speaks a different dialect. Partly translates between them — so insurers, OEMs, repairers, and dismantlers can finally work from the same data, in real time.</p>
+
+    <div class="protocol-grid">
+      <div class="protocol-text">
+        <h3>One protocol. Every participant.</h3>
+        <p>Partly sits between the systems that already exist — translating part numbers, resolving fitment, surfacing inventory across networks. Build once, connect everywhere.</p>
+        <ul>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Standardised part IDs across every manufacturer and supplier catalogue.</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Real-time supply visibility across dismantlers, distributors, and OEMs.</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Webhooks and streaming for events that matter — orders, shipments, returns.</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Regional compliance — NZ, AU, UK, EU, and US, with more coming.</span></li>
+        </ul>
+      </div>
+      <div class="protocol-diagram">
+        <!-- Hub-and-spoke network diagram -->
+        <svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Partly sits at the centre, connecting six industry participants.">
+          <!-- Connection lines (draw first so they sit behind nodes) -->
+          <g stroke="#3632FF" stroke-width="1" stroke-opacity="0.25">
+            <line x1="240" y1="240" x2="240" y2="80" />
+            <line x1="240" y1="240" x2="378" y2="160" />
+            <line x1="240" y1="240" x2="378" y2="320" />
+            <line x1="240" y1="240" x2="240" y2="400" />
+            <line x1="240" y1="240" x2="102" y2="320" />
+            <line x1="240" y1="240" x2="102" y2="160" />
+          </g>
+
+          <!-- Outer nodes -->
+          <g font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#1F1F1F" text-anchor="middle">
+            <!-- Insurers (top) -->
+            <circle cx="240" cy="80" r="48" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
+            <text x="240" y="76" font-size="10" fill="#6B7280" letter-spacing="0.08em">INSURERS</text>
+            <text x="240" y="92">Suncorp · IAG</text>
+
+            <!-- OEMs (top right) -->
+            <circle cx="378" cy="160" r="48" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
+            <text x="378" y="156" font-size="10" fill="#6B7280" letter-spacing="0.08em">OEMs</text>
+            <text x="378" y="172">Toyota · JLR</text>
+
+            <!-- Distributors (bottom right) -->
+            <circle cx="378" cy="320" r="48" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
+            <text x="378" y="316" font-size="10" fill="#6B7280" letter-spacing="0.08em">DISTRIBUTORS</text>
+            <text x="378" y="332">Repco · NAPA</text>
+
+            <!-- Bodyshops (bottom) -->
+            <circle cx="240" cy="400" r="48" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
+            <text x="240" y="396" font-size="10" fill="#6B7280" letter-spacing="0.08em">REPAIRERS</text>
+            <text x="240" y="412">15k+ shops</text>
+
+            <!-- Dismantlers (bottom left) -->
+            <circle cx="102" cy="320" r="48" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
+            <text x="102" y="316" font-size="10" fill="#6B7280" letter-spacing="0.08em">DISMANTLERS</text>
+            <text x="102" y="332">Network</text>
+
+            <!-- DMS (top left) -->
+            <circle cx="102" cy="160" r="48" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
+            <text x="102" y="156" font-size="10" fill="#6B7280" letter-spacing="0.08em">DMS</text>
+            <text x="102" y="172">Mitchell · CCC</text>
+          </g>
+
+          <!-- Center: Partly -->
+          <circle cx="240" cy="240" r="62" fill="#3632FF" />
+          <text x="240" y="237" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#fff" text-anchor="middle" letter-spacing="-0.01em">Partly</text>
+          <text x="240" y="255" font-family="JetBrains Mono, monospace" font-size="10" fill="#C5C4FF" text-anchor="middle">// protocol</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MOMENT — saturated customer quote ============ -->
+<section class="moment">
+  <div class="container">
+    <div class="section-eyebrow">From production</div>
+    <p class="moment-quote">A single platform replaced thirty pieces of software. We're pricing jobs 67% faster, and every system in the business now reads from the same parts data.</p>
+
+    <div class="moment-bottom">
+      <div class="moment-attr">
+        <div class="moment-attr-avatar">RH</div>
+        <div class="moment-attr-meta">
+          <div class="moment-attr-name">Richard Howard</div>
+          <div>Operations Director · Enterprise UK Automotive Group</div>
+        </div>
+      </div>
+      <div class="moment-stat">
+        <div class="moment-stat-value">67%</div>
+        <div class="moment-stat-label">Reduction in time to price up jobs</div>
+      </div>
+      <div class="moment-stat">
+        <div class="moment-stat-value">30+</div>
+        <div class="moment-stat-label">Software solutions and EPCs replaced</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CODE SHOWCASE — what the API actually does ============ -->
+<section class="code-showcase">
+  <div class="container">
+    <div class="section-eyebrow">Built for builders</div>
+    <h2 style="font-size: clamp(34px, 4.2vw, 54px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 600; margin: 0 0 22px;">An SDK, not a stack of integrations.</h2>
+    <p class="lede">Type-safe SDKs in every major language. Resource-oriented endpoints. Webhook events. Pagination, retries, and idempotency that work the way you'd expect.</p>
+
+    <div class="code-showcase-grid">
+      <ul class="code-showcase-list">
+        <li>
+          <i class="ti ti-bolt code-showcase-list-icon" aria-hidden="true"></i>
+          <div>
+            <div class="code-showcase-list-title">Single API for the entire workflow</div>
+            <div class="code-showcase-list-desc">Identify, source, quote, order, track — every part operation through one consistent interface.</div>
+          </div>
+        </li>
+        <li>
+          <i class="ti ti-shield-check code-showcase-list-icon" aria-hidden="true"></i>
+          <div>
+            <div class="code-showcase-list-title">Type-safe SDKs</div>
+            <div class="code-showcase-list-desc">JavaScript, Python, Ruby, Go, and Java. Auto-generated from OpenAPI, so the types match production.</div>
+          </div>
+        </li>
+        <li>
+          <i class="ti ti-webhook code-showcase-list-icon" aria-hidden="true"></i>
+          <div>
+            <div class="code-showcase-list-title">Webhooks and streaming</div>
+            <div class="code-showcase-list-desc">Subscribe to order events, supply changes, shipment updates. Push, not poll.</div>
+          </div>
+        </li>
+        <li>
+          <i class="ti ti-database code-showcase-list-icon" aria-hidden="true"></i>
+          <div>
+            <div class="code-showcase-list-title">Bulk and batch operations</div>
+            <div class="code-showcase-list-desc">Process millions of VINs or part lookups in a single job. Asynchronous, with progress callbacks.</div>
+          </div>
+        </li>
+        <li>
+          <i class="ti ti-world code-showcase-list-icon" aria-hidden="true"></i>
+          <div>
+            <div class="code-showcase-list-title">Regional data residency</div>
+            <div class="code-showcase-list-desc">NZ, AU, UK, EU, US. SOC 2 Type II, ISO 27001, GDPR compliant.</div>
+          </div>
+        </li>
+      </ul>
+      <div class="code-card">
+        <div class="hero-code-tabs">
+          <div class="hero-code-tab active">webhooks.js</div>
+          <div class="hero-code-tab">events</div>
+        </div>
+        <div class="hero-code-body">
+<div><span class="code-comment">// subscribe to part-supply events</span></div>
+<div><span class="code-key">const</span> webhook = <span class="code-key">await</span> partly.webhooks.<span class="code-fn">create</span>({</div>
+<div>  <span class="code-out">url</span>: <span class="code-string">'https://api.acme.com/partly'</span>,</div>
+<div>  <span class="code-out">events</span>: [</div>
+<div>    <span class="code-string">'order.fulfilled'</span>,</div>
+<div>    <span class="code-string">'supply.changed'</span>,</div>
+<div>    <span class="code-string">'shipment.updated'</span></div>
+<div>  ]</div>
+<div>});</div>
+<div class="code-gap"></div>
+<div><span class="code-comment">// event payload</span></div>
+<div>{</div>
+<div>  <span class="code-out">"event"</span>: <span class="code-string">"order.fulfilled"</span>,</div>
+<div>  <span class="code-out">"order_id"</span>: <span class="code-string">"ord_8K2nP4Lq"</span>,</div>
+<div>  <span class="code-out">"part_id"</span>: <span class="code-string">"part.front_bumper.cover"</span>,</div>
+<div>  <span class="code-out">"supplier"</span>: <span class="code-string">"repco_auckland"</span>,</div>
+<div>  <span class="code-out">"eta"</span>: <span class="code-string">"2026-05-29T14:00:00Z"</span></div>
+<div>}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAPABILITIES GRID ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow">Endpoints</div>
+    <h2>One API. Every part operation.</h2>
+    <p class="lede">The full surface of the Partly platform — accessible through one consistent, well-documented API.</p>
+
+    <div class="capabilities">
+      <div class="cap">
+        <div class="cap-icon"><i class="ti ti-scan" aria-hidden="true"></i></div>
+        <h3>Identify</h3>
+        <p>Resolve parts from VIN, image, or text description.</p>
+      </div>
+      <div class="cap">
+        <div class="cap-icon"><i class="ti ti-package" aria-hidden="true"></i></div>
+        <h3>Catalog</h3>
+        <p>Full parts graph, fitment, and supersessions.</p>
+      </div>
+      <div class="cap">
+        <div class="cap-icon"><i class="ti ti-truck-delivery" aria-hidden="true"></i></div>
+        <h3>Source</h3>
+        <p>Real-time supply across the connected network.</p>
+      </div>
+      <div class="cap">
+        <div class="cap-icon"><i class="ti ti-receipt" aria-hidden="true"></i></div>
+        <h3>Quote</h3>
+        <p>Generate priced estimates with confidence scores.</p>
+      </div>
+      <div class="cap">
+        <div class="cap-icon"><i class="ti ti-shopping-cart" aria-hidden="true"></i></div>
+        <h3>Order</h3>
+        <p>Place orders with carrier-specific approval flows.</p>
+      </div>
+      <div class="cap">
+        <div class="cap-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+        <h3>Track</h3>
+        <p>Real-time shipment and delivery status.</p>
+      </div>
+      <div class="cap">
+        <div class="cap-icon"><i class="ti ti-webhook" aria-hidden="true"></i></div>
+        <h3>Webhooks</h3>
+        <p>Push events for every state change.</p>
+      </div>
+      <div class="cap">
+        <div class="cap-icon"><i class="ti ti-stack" aria-hidden="true"></i></div>
+        <h3>Batch</h3>
+        <p>Process millions of operations asynchronously.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRE-BUILT PRODUCTS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow">Deploy pre-built</div>
+    <h2>Whitelabel-ready, embedded, or fully bespoke.</h2>
+    <p class="lede">Don't have engineering capacity? Launch one of Partly's pre-built applications with your brand on the front. Or embed the SDK into your existing tools.</p>
+
+    <div class="products-row">
+      <div class="product">
+        <div class="product-visual">
+          <div class="pv-app">
+            <div class="pv-app-bar">
+              <div class="pv-app-dot"></div>
+              <div class="pv-app-dot"></div>
+              <div class="pv-app-dot"></div>
+            </div>
+            <div class="pv-app-row">
+              <span>Front bumper cover</span>
+              <span class="pv-pill">In stock</span>
+            </div>
+            <div class="pv-app-row">
+              <span>Headlamp, LH</span>
+              <span class="pv-pill">In stock</span>
+            </div>
+            <div class="pv-app-row">
+              <span>Fender liner</span>
+              <span class="pv-pill">2 sources</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-body">
+          <div class="product-tag">// repair</div>
+          <h3>Partly Repair</h3>
+          <p>The bodyshop-facing application. Identify, source, and order in one workflow. Whitelabel with your brand.</p>
+          <a href="index.html" class="link">See Repair <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <div class="product">
+        <div class="product-visual">
+          <div class="pv-stat-grid">
+            <div class="pv-stat">
+              <div class="pv-stat-num">94<span style="font-size: 14px; color: var(--fg-subtle);">%</span></div>
+              <div class="pv-stat-lab">First-time-right</div>
+            </div>
+            <div class="pv-stat">
+              <div class="pv-stat-num">3.2<span style="font-size: 14px; color: var(--fg-subtle);">×</span></div>
+              <div class="pv-stat-lab">Faster sourcing</div>
+            </div>
+            <div class="pv-stat">
+              <div class="pv-stat-num">38<span style="font-size: 14px; color: var(--fg-subtle);">m</span></div>
+              <div class="pv-stat-lab">Saved per quote</div>
+            </div>
+            <div class="pv-stat">
+              <div class="pv-stat-num">2.7<span style="font-size: 14px; color: var(--fg-subtle);">×</span></div>
+              <div class="pv-stat-lab">Less rework</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-body">
+          <div class="product-tag">// procure</div>
+          <h3>Partly Procure</h3>
+          <p>The insurer-facing application. Approval workflows, supplier networks, real-time cost control.</p>
+          <a href="#" class="link">See Procure <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <div class="product">
+        <div class="product-visual">
+          <div class="pv-list">
+            <div class="pv-list-h">Inventory · today</div>
+            <div class="pv-list-row">
+              <span>52119-0R907</span>
+              <span style="color: #0F6E56;">listed</span>
+            </div>
+            <div class="pv-list-row">
+              <span>81150-0R213</span>
+              <span style="color: #0F6E56;">listed</span>
+            </div>
+            <div class="pv-list-row">
+              <span>53875-0R060</span>
+              <span style="color: var(--primary);">sold</span>
+            </div>
+            <div class="pv-list-row">
+              <span>89173-0R071</span>
+              <span style="color: #0F6E56;">listed</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-body">
+          <div class="product-tag">// dismantle</div>
+          <h3>Partly Dismantle</h3>
+          <p>The dismantler-facing application. Catalogue inventory, surface to demand, manage sales — all in one.</p>
+          <a href="#" class="link">See Dismantle <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTEGRATIONS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow">Integrations</div>
+    <h2>Already connected to the tools you use.</h2>
+    <p class="lede">Native integrations with the major DMS, estimating, accounting, and inventory platforms. Plus an open SDK for everything else.</p>
+
+    <div class="integrations">
+      <div class="integration">Mitchell</div>
+      <div class="integration">CCC</div>
+      <div class="integration">Solera</div>
+      <div class="integration">AudaPro</div>
+      <div class="integration">Estify</div>
+      <div class="integration">Repco</div>
+      <div class="integration">NAPA</div>
+      <div class="integration">Motorhub</div>
+      <div class="integration">Xero</div>
+      <div class="integration">QuickBooks</div>
+      <div class="integration">SAP</div>
+      <div class="integration">+ 40 more</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACCESS PATHS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow">Get started</div>
+    <h2>Two ways to build with Partly.</h2>
+    <p class="lede">Self-serve, with a pay-as-you-go API and developer tier. Or talk to sales for enterprise-grade onboarding, volume pricing, and bespoke integrations.</p>
+
+    <div class="paths">
+      <div class="path">
+        <div class="path-tag">// self-serve</div>
+        <h3>Build on your own</h3>
+        <p>Get an API key in minutes. Usage-based pricing, automatically scaling rate limits, full self-serve dashboard.</p>
+        <ul class="path-list">
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Access to all endpoints — Identify, Source, Order, Track</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Usage-based tiers with auto-scaling rate limits</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Self-serve console and prompt libraries</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Full developer documentation and SDKs</span></li>
+        </ul>
+        <a href="#" class="btn btn-secondary">Start building <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      <div class="path featured">
+        <div class="path-tag">// enterprise</div>
+        <h3>Get extra support</h3>
+        <p>For teams running mission-critical workloads. Custom rate limits, dedicated success engineering, contracted SLAs.</p>
+        <ul class="path-list">
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Dedicated onboarding and integration support</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>Custom rate limits and volume pricing</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>SOC 2, ISO 27001, regional data residency</span></li>
+          <li><i class="ti ti-check" aria-hidden="true"></i> <span>SLA-backed uptime and incident response</span></li>
+        </ul>
+        <a href="#" class="btn btn-primary">Talk to sales <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta">
+  <div class="container">
+    <h2>The infrastructure layer for the parts industry.</h2>
+    <p>Whether you're building a product or replacing thirty, start with the data.</p>
+    <div class="final-cta-btns">
+      <a href="#" class="btn btn-primary btn-lg">Start building</a>
+      <a href="#" class="btn btn-secondary btn-lg">Talk to sales <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo"><img src="partly-wordmark.svg" alt="Partly" /></a>
+        <div class="footer-tag">Connecting the world's parts.</div>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <a href="index.html">For bodyshops</a>
+        <a href="partly-interpreter.html">Interpreter</a>
+        <a href="partly-platform.html">Platform</a>
+        <a href="#">Pricing</a>
+      </div>
+      <div>
+        <h4>Solutions</h4>
+        <a href="#">Insurers</a>
+        <a href="#">OEMs</a>
+        <a href="#">Dismantlers</a>
+        <a href="#">Dealers</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">News</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="#">Docs</a>
+        <a href="#">Whitepaper</a>
+        <a href="#">Help centre</a>
+        <a href="#">Status</a>
+      </div>
+    </div>
+    <div class="footer-end">
+      <div>© Partly 2026</div>
+      <div>Terms · Privacy · Security</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
